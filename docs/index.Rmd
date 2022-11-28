@@ -5,9 +5,10 @@ date: '2022-11-17'
 output: html_document
 ---
 
-```{r echo=FALSE, eval=TRUE, message=FALSE}
+```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
 source("../source/a4-helpers.R")
 source("../source/analysis.R")
+options(scipen=999)
 ```
 
 ## Abstract 
@@ -21,4 +22,13 @@ to address the issues at hand but rather, caused more suffering. Although the id
 
 
 ## Data Summary 
+I am not sure if we were supposed to answer exactly the three questions that are on Canvas or we could choose our data like the P2, but while looking at the data set and reading through its code book, I got my interest on looking into which race faced the most inequalities in being prisoned.
+And before mentioning the specific summarized data, the data set is said to contain data from 1970 to 2018, however, in order to calculate including every states' data, the max year used in this summarization was 2016.
+
+In the year 1970, the race holding the majority of population in the U.S. was `r summary_info$wa_1970_race_most_prison`. Which means that the Black population held the majority in prison. And the opposite goes to `r summary_info$wa_1970_race_least_prison`.
+Moving onto year 2016, the race holding the majority of population in the U.S. was `r summary_info$wa_2016_race_most_prison`. Which means that the White population held the majority in prison but not by much. Black_prison_rate was coming in second very closely to the White. And the least goes to `r summary_info$wa_2016_race_least_prison`.
+
+This being said, we can see that AAPI race were always the least likely to be a prisoner as they had the smallest population in the early days and recent. However, we can definitely see that Black population has been and always been a majority (although in year 2016, White population was larger but noy by much). 
+
+Based on this trend, we can see that the Black population has been suffering from the inequalities and for more detailed information on this, I found that `r summary_info$year_most_black_prison` was the year in which Black population was at large in prison in the U.S. with the population of `r summary_info$black_prison_pop_2013` and that `r summary_info$state_most_black_prison` is the state in which Black population is at large in prison with the population at `r summary_info$black_prison_pop_ca`.
 

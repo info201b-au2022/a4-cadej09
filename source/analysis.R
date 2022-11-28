@@ -27,54 +27,65 @@ us_prison_rate_df<- us_prison_pop_df %>%
          white_prison_rate = white_prison_pop/total_prison_pop) %>%
   select(year, matches("rate"))
 
-us_prison_rate_1988_df <- us_prison_rate_df %>%
+us_prison_rate_1970_df <- us_prison_rate_df %>%
   filter(year == 1970) %>%
   select(matches("rate"))
 
 us_prison_rate_2016_df <- us_prison_rate_df %>%
   filter(year == 2016) %>%
   select(matches("rate"))
-
-aapi_trend <- lm(aapi_prison_pop ~ year, data = us_prison_pop_df)
-black_trend <- lm(black_prison_pop ~ year, data = us_prison_pop_df)
-latinx_trend <- lm(latinx_prison_pop ~ year, data = us_prison_pop_df)
-white_trend <- lm(white_prison_pop ~ year, data = us_prison_pop_df)
-native_trend <- lm(native_prison_pop ~ year, data = us_prison_pop_df)
   
-us_prison_rate_1988_df$most_prison_race_1970 <- colnames(us_prison_rate_1988_df)[apply(us_prison_rate_1988_df,1,which.max)]
-us_prison_rate_1988_df$least_prison_race_1970 <- colnames(us_prison_rate_1988_df)[apply(us_prison_rate_1988_df,1,which.min)]
+us_prison_rate_1970_df$most_prison_race_1970 <- colnames(us_prison_rate_1970_df)[apply(us_prison_rate_1970_df,1,which.max)]
+us_prison_rate_1970_df$least_prison_race_1970 <- colnames(us_prison_rate_1970_df)[apply(us_prison_rate_1970_df,1,which.min)]
 
 us_prison_rate_2016_df$most_prison_race_2016 <- colnames(us_prison_rate_2016_df)[apply(us_prison_rate_2016_df,1,which.max)]
 us_prison_rate_2016_df$least_prison_race_2016 <- colnames(us_prison_rate_2016_df)[apply(us_prison_rate_2016_df,1,which.min)]
 
-summary_info$wa_1988_race_most_prison <- us_prison_rate_1988_df %>%
+black_prison_pop_year <- incarceration_df %>%
+  group_by(year) %>%
+  summarise(black_prison_pop = sum(black_prison_pop, na.rm = T))
+
+black_prison_pop_state <- incarceration_df %>%
+  group_by(state) %>%
+  summarise(black_prison_pop = sum(black_prison_pop, na.rm = T))
+
+summary_info$wa_1970_race_most_prison <- us_prison_rate_1970_df %>%
   select(most_prison_race_1970)
-summary_info$wa_1988_race_least_prison <- us_prison_rate_1988_df %>%
+summary_info$wa_1970_race_least_prison <- us_prison_rate_1970_df %>%
   select(least_prison_race_1970)
 summary_info$wa_2016_race_most_prison <- us_prison_rate_2016_df %>%
   select(most_prison_race_2016)
 summary_info$wa_2016_race_least_prison <- us_prison_rate_2016_df %>%
   select(least_prison_race_2016)
-summary_info$aapi_trend <- aapi_trend[1]
-summary_info$black_trend <- black_trend[1]
-summary_info$latinx_trend <- latinx_trend[1]
-summary_info$white_trend <- white_trend[1]
-summary_info$native_trend <- native_trend[1]
+summary_info$year_most_black_prison <- black_prison_pop_year %>%
+  filter(black_prison_pop == max(black_prison_pop, na.rm = T)) %>%
+  select(year)
+summary_info$black_prison_pop_2013 <- black_prison_pop_year %>%
+  filter(year == 2013) %>%
+  select(black_prison_pop)
+summary_info$state_most_black_prison <- black_prison_pop_state %>%
+  filter(black_prison_pop == max(black_prison_pop, na.rm = T)) %>%
+  select(state)
+summary_info$black_prison_pop_ca <- black_prison_pop_state %>%
+  filter(state == "CA") %>%
+  select(black_prison_pop)
 
 #----------------------------------------------------------------------------#
 
 ## Section 3  ---- 
 #----------------------------------------------------------------------------#
 # Growth of the U.S. Prison Population
-# Your functions might go here ... <todo:  update comment>
-#----------------------------------------------------------------------------#
+# In this section, our task is to create two functions. One that will wrangle out data set into 
+# a subset that we can use in another functions to plot our data. The plotting will be done on
+# prison population in the U.S. from 1970 to 2018 using a geom_col. 
+
 # This function ... breaks down the incarceration_df into subsets so that it only 
 # contains information about the prison population in the U.S. from 1970 to 2018. 
 get_year_jail_pop <- function() {
   prison_pop_1979_2018 <- incarceration_df %>%
     group_by(year) %>%
     summarise(total_jail_pop = sum(total_jail_pop, na.rm = T))
-return(prison_pop_1979_2018)   
+  return(prison_pop_1979_2018)   
 }
 
 # This function ... calls the above get_year_jail_pop function to change data frame into
@@ -88,19 +99,45 @@ plot_jail_pop_for_us <- function()  {
     scale_y_continuous(labels = scales::comma) 
   return(bar)   
 } 
+#----------------------------------------------------------------------------#
 
 ## Section 4  ---- 
 #----------------------------------------------------------------------------#
 # Growth of Prison Population by State 
-# Your functions might go here ... <todo:  update comment>
-# See Canvas
+# In this section, our task is to create two functions where one function will take a 
+# vector of state names and use that to filter out the incarceration_df into a smaller
+# subset df with specified states and will be used in another function to plot that data frame
+# so that the plotting will be done on prison population of those states from 1970 to 2018 
+# using line charts. 
+
+# This functions takes in a manually specified vectors of state names (when called) and wrangles
+# the incarceration_df into a subset that will only contain the states that are speified. 
+# Will contain it's sum of jail_pop by year and state. 
+get_jail_pop_by_states <- function(states) {
+  state_pop <- incarceration_df %>% 
+    group_by(state, year) %>% 
+    filter(state %in% c(states)) %>% 
+    summarise(total_jail_pop = sum(total_jail_pop, na.rm = T))
+  return(state_pop)
+}
+
+# This function calls the above function to use its wrangled subset to create a line chart
+# containing increase of jail population from 1970 - 2018. Different states will differ in color. 
+plot_jail_pop_by_states <- function(states) {
+  line <- ggplot(get_jail_pop_by_states(c(states)), 
+                 aes(x = year, y = total_jail_pop, group = state)) +
+    geom_line(aes(color = state)) +
+    labs(title = "Increase of Jail Population by States (1970 - 2018)", 
+         x = "Year", y = "Total Jail Population") +
+    scale_y_continuous(labels = scales::comma)
+  return(line)
+}
 #----------------------------------------------------------------------------#
 
 ## Section 5  ---- 
 #----------------------------------------------------------------------------#
 # <variable comparison that reveals potential patterns of inequality>
-# Your functions might go here ... <todo:  update comment>
-# See Canvas
+# In this section 
 #----------------------------------------------------------------------------#
 
 ## Section 6  ---- 
