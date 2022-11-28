@@ -11,35 +11,14 @@ source("../source/analysis.R")
 ```
 
 ## Abstract 
-[TODO: Include a short abstract (about 50 words)]
+With the ever increasing population in prison and the rate of incarceration in America, we are greatly concerned about the life of those behind bars and the possible racial disparities that exist regarding the population in prison. Our goal is to find where these disparities exist using data and suggest ways to fix them.
 
-# Test (TODO: Remove before submission!!)
-```{r echo=FALSE}
-q1_string <- test_query1()
-num <- 5
-```
-As you know, this is a markdown report. The [R Markdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) is **useful!**
-
-* Here's a test of a dynamic variable. Say **"`r q1_string`!!!** 
-* Here's another test. A vector
-of numbers: `r test_query2(num)`.
-
-Recall that _{r echo=TRUE}_ can be used to display the code, 
-which is very useful when developing and debugging a report. Here's an example: 
-
-```{r echo=TRUE}
-num <- 5
-sum <- sum(test_query2(num))
-print(sum)
-```
 
 ## Introduction 
-[TODO]
+Ever since 1865 with the end of the Civil War and the passage of the 13th Amendment, the incarceration and arrests had been a major issue to those who are Black and/or not privileged. 
+And as if to follow the historical trend, newly elected officials and policymaker did not step up 
+to address the issues at hand but rather, caused more suffering. Although the idea of racial disparities within the jail population is a big issue itself, within the context that the U.S. holds 16% of the jail population in the entire world is more troublesome. As quoted from [Vera Institute](https://www.vera.org/), “From 1850 to 1940, racial and ethnic minorities—including foreign-born and non-English speaking European immigrants—made up 40 to 50 percent of the prison population. In 2015, about 55 percent of people imprisoned in federal or state prisons were Black or Latino.” The dataset is collected so that we can analyze the patterns in which inequalities exist and suggest possible solutions to how they can be fixed. Which makes the direct stakeholders for this dataset and its usage being policymakers, families (including self) of those being incarcerated, researchers (data), and indirect being all those who belong in the privilege hazard; not knowing about what is going on. 
+
 
 ## Data Summary 
-[TODO]
-
-[TODO ... other sections ... See Canvas for details]
-
-_All the very best with your work!_
 
