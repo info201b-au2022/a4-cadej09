@@ -34,26 +34,30 @@ This being said, we can see that AAPI race were always the least likely to be a 
 
 Based on this trend, we can see that the Black population has been suffering from the inequalities over the years in the U.S. and to add more detailed information on this, I found that 2013 was the year in which Black population was at large in prison in the U.S. with the population of `r summary_info$black_prison_pop_2013` and that `r summary_info$state_most_black_prison` is the state in which Black population is at large in prison with the population at `r summary_info$black_prison_pop_ca`.
 
-## How did the jail population in the U.S. change over time?
 ### Chart 1: Increase of Jail Population in the U.S. (1970 - 2018)
 ```{r echo=FALSE}
 plot(plot_jail_pop_for_us())
 ```
+##### How did the jail population in the U.S. change over time?
+This plot shows us that the general trend of jail population in the U.S. through out the years has increased. 1970 had its peak during the 1970s, slowed down until around 1979 and then started to increase until around 2010. The numbers almost quadrupled in the last 50 years. 
 
-This plot shows us 
-
-## How did the jail population in the specified states change over time?
 ### Chart 2: Increase of Jail Population by states (1970 - 2018)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-plot(plot_jail_pop_by_states(c("AK", "NY", "WA", "CA", "TX")))
+plot(plot_jail_pop_by_states(c("AK", "NY", "WA", "CA", "TX", "FL", "GA")))
 ```
+##### How did the jail population in the specified states change over time?
+This plot shows us that the total jail populations by the states has also been on a generally increasing trend ever since 1970. I chose these states not for a good reason, they were just some of the states that I could think of in my head at the moment. There seems to be something wrong with the data for WA. Not sure what the problem is at the moment. 
 
-This plot shows us
-
-## How is the Black population experiencing inequalities based on urbanicity of the U.S.?
 ### Chart 3: Ratio of Incarceration for Black Population Based on Urbanicty
 ```{r echo=FALSE}
 plot(plot_black_incarceration_ratio())
 ```
+##### How is the Black population experiencing inequalities based on urbanicity of the U.S.?
+Taking a good look at this plot, we can see that BlackToBlack is a ratio that was calculated based on Black population by the urbanicity to how many were incarcerated. Thankfully it wasn't too high. However, not comparing it to the BlackToTotal and TotalToTotal, we can see in urban area, that Black incarceration population takes almost half of the total incarceration. 
 
-This plot shows us
+### Chart 4: Incarcerated Population Ratio of Balck to White by Counties in WA (1970 - 2018)
+```{r echo=FALSE, warning=F, message=F}
+plot(plot_wa_incarceration())
+```
+##### How does the difference counties in WA vary in their Black to White incarceration population?
+This map allows us to take a look at the Washington state by counties and how and where exactly the inequalities are more existent. Based on what I know, we can see that in the King county, there seems to be a good number of Black incarcerated population in comparison to the White. In some of areas near Spokane, and such, there seems to be less Black incarcerated populations to White. Darker the area, more Black incarcerated populations there are in comparison to White incarcerated population.

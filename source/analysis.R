@@ -208,8 +208,12 @@ plot_black_incarceration_ratio <- function() {
 
 ## Section 6  ----
 #----------------------------------------------------------------------------#
-# Black Incarceration to White Incarceration by Counties in WA
-# In this section, we will create two functions in order to
+# Black Incarceration to White Incarceration Ratio by Counties in WA
+# In this section, we will create two functions in order to map inequalities that
+# exist within the incarceration population by comparing two races: Black and White.
+# Although this may be a controversial choices, this is the most historically related
+# choices. Another function will use the us map and the wrangled dataframe to create 
+# a WA county map with a gradient showing the differences in ratios by counties.
 
 states <- map_data("state")
 wa_state <- subset(states, region == "washington")
@@ -233,7 +237,9 @@ wa_base <- wa_base + minimalize +
   geom_polygon(data = wa_county, fill = NA, color = "white") +
   geom_polygon(color = "black", fill = NA)
 
-#
+# This function wrangles the incarceration df into a subset that only includes
+# relavant information about the black to white ratio in incarcerated facilities in WA
+# by counties through out the all recorded years. 
 get_county_inequality <- function() {
   incarceration_df$county_name <- gsub(" County", "", incarceration_df$county_name)
   wa_county_inequality <- incarceration_df %>%
@@ -261,17 +267,15 @@ plot_wa_incarceration <- function() {
     geom_polygon(color = "black", fill = NA) +
     theme_bw() +
     minimalize +
-    ggtitle("Incarcerated Population Ratio of Black to White by Counties in WA (1970 - 2018)")
+    ggtitle("Incarcerated Population Ratio of Black to White by Counties in WA (1970 - 2018)") 
 
   county_black_to_white_incar_pop <- gg1 + scale_fill_gradient(
-    low = "#000000", high = "#e74c3c",
-    breaks = c(0.025, 0.05, 0.1, 0.2, 0.4, 0.8), trans = "log10",
-    name = "# of Crimes"
+    low = "#F8F8FF", high = "#100C07",
+    breaks = c(0.005, 0.01, 0.025, 0.05, 0.1, 0.2, 0.4, 0.6), trans = "log10",
+    name = "Black to White Pop Ratio in Incarceration"
   )
   return(county_black_to_white_incar_pop)
 }
-
-plot_wa_incarceration()
 #----------------------------------------------------------------------------#
 
 ## Load data frame ----
