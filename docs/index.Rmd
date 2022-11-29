@@ -6,9 +6,13 @@ output: html_document
 ---
 
 ```{r echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+library(knitr)
 source("../source/a4-helpers.R")
 source("../source/analysis.R")
 options(scipen=999)
+knit_hooks$set(inline = function(x) {
+  prettyNum(x, big.mark=",")
+})
 ```
 
 ## Abstract 
@@ -28,7 +32,7 @@ Moving onto year 2016, the race holding the majority of population in the U.S. w
 
 This being said, we can see that AAPI race were always the least likely to be a prisoner as they had the smallest population in the early days and recent. However, we can definitely see that Black population has been and always been a majority (although in year 2016, White population was larger but noy by much). 
 
-Based on this trend, we can see that the Black population has been suffering from the inequalities and for more detailed information on this, I found that `r summary_info$year_most_black_prison` was the year in which Black population was at large in prison in the U.S. with the population of `r summary_info$black_prison_pop_2013` and that `r summary_info$state_most_black_prison` is the state in which Black population is at large in prison with the population at `r summary_info$black_prison_pop_ca`.
+Based on this trend, we can see that the Black population has been suffering from the inequalities over the years in the U.S. and to add more detailed information on this, I found that 2013 was the year in which Black population was at large in prison in the U.S. with the population of `r summary_info$black_prison_pop_2013` and that `r summary_info$state_most_black_prison` is the state in which Black population is at large in prison with the population at `r summary_info$black_prison_pop_ca`.
 
 ## How did the jail population in the U.S. change over time?
 ### Chart 1: Increase of Jail Population in the U.S. (1970 - 2018)
@@ -53,11 +57,3 @@ plot(plot_black_incarceration_ratio())
 ```
 
 This plot shows us
-
-## Chart 4:
-```{r echo=FALSE}
-plot()
-```
-?
-
-This plot

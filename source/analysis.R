@@ -1,4 +1,7 @@
 library(tidyverse)
+library(ggmap)
+library(maps)
+library(mapdata)
 
 # The functions might be useful for A4
 source("../source/a4-helpers.R")
@@ -156,9 +159,9 @@ plot_jail_pop_by_states <- function(states) {
 # Then another function will be made to call the get_black_incarceration function to plot our subset
 # with interested variables and values to visualize our findings in inequality using charts.
 
-# This function will wrangle and crate a subset of the incarceration_df into a 
-# variable called total_and_black_incarceration to group by urbanicity and mutate, summarise, 
-# to eventually create a data frame containing ratio of the incarceration for Black population. 
+# This function will wrangle and crate a subset of the incarceration_df into a
+# variable called total_and_black_incarceration to group by urbanicity and mutate, summarise,
+# to eventually create a data frame containing ratio of the incarceration for Black population.
 get_black_incarceration_ratio <- function() {
   total_and_black_incarceration <- incarceration_df %>%
     group_by(urbanicity) %>%
@@ -181,10 +184,10 @@ get_black_incarceration_ratio <- function() {
   return(total_and_black_incarceration)
 }
 
-# This function calls the above data wrangling function to grab the subset data frame 
-# and turn it into a barplot with x axis being urbanicity and y being the incarceration ratio. 
-# It shows three different values: Black incarceration compared to Black population, 
-# Total incarceration compared to Total population, and Black incarceration compared to Total population. 
+# This function calls the above data wrangling function to grab the subset data frame
+# and turn it into a barplot with x axis being urbanicity and y being the incarceration ratio.
+# It shows three different values: Black incarceration compared to Black population,
+# Total incarceration compared to Total population, and Black incarceration compared to Total population.
 plot_black_incarceration_ratio <- function() {
   ggplot(data = get_black_incarceration_ratio()) +
     geom_col(
@@ -193,7 +196,7 @@ plot_black_incarceration_ratio <- function() {
     ) +
     labs(
       title = "Ratio of Incarceration for Black Population Based on Urbanicity",
-      subtitle= "In comparison to the Total Incarceration Population and to Black Incarceration with Total", 
+      subtitle = "In comparison to the Total Incarceration Population and to Black Incarceration with Total",
       x = "Urbanicity", y = "Incarceration Ratio"
     ) +
     scale_fill_manual(
@@ -205,8 +208,70 @@ plot_black_incarceration_ratio <- function() {
 
 ## Section 6  ----
 #----------------------------------------------------------------------------#
-# <a map shows potential patterns of inequality that vary geographically>
-# In this section,
+# Black Incarceration to White Incarceration by Counties in WA
+# In this section, we will create two functions in order to
+
+states <- map_data("state")
+wa_state <- subset(states, region == "washington")
+counties <- map_data("county")
+wa_county <- subset(counties, region == "washington")
+wa_county$county <- toupper(wa_county$subregion)
+minimalize <- theme(
+  axis.line = element_blank(), # remove axis lines
+  axis.text = element_blank(), # remove axis labels
+  axis.ticks = element_blank(), # remove axis ticks
+  axis.title = element_blank(), # remove axis titles
+  plot.background = element_blank(), # remove gray background
+  panel.grid.major = element_blank(), # remove major grid lines
+  panel.grid.minor = element_blank(), # remove minor grid lines
+  panel.border = element_blank(),
+)
+wa_base <- ggplot(wa_state, mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(color = "black", fill = "gray")
+wa_base <- wa_base + minimalize +
+  geom_polygon(data = wa_county, fill = NA, color = "white") +
+  geom_polygon(color = "black", fill = NA)
+
+#
+get_county_inequality <- function() {
+  incarceration_df$county_name <- gsub(" County", "", incarceration_df$county_name)
+  wa_county_inequality <- incarceration_df %>%
+    filter(state == "WA") %>%
+    mutate(county = toupper(county_name)) %>%
+    group_by(county) %>%
+    mutate(
+      black_incarceration_pop = black_jail_pop + black_prison_pop,
+      white_incarceration_pop = white_jail_pop + white_prison_pop
+    ) %>%
+    summarise(
+      black_incarceration_pop = sum(black_incarceration_pop, na.rm = T),
+      white_incarceration_pop = sum(white_incarceration_pop, na.rm = T)
+    ) %>%
+    mutate(black_white_pop_ratio = black_incarceration_pop / white_incarceration_pop)
+  enrol_map <- inner_join(wa_county, wa_county_inequality, by = "county")
+  return(enrol_map)
+}
+
+# This function calls the above functions to join them together and use the given information to create
+# a gradient map to show which county has more Black incarcerated population in compared to White incarcerated population.
+plot_wa_incarceration <- function() {
+  gg1 <- wa_base +
+    geom_polygon(data = get_county_inequality(), aes(fill = black_white_pop_ratio), color = "white") +
+    geom_polygon(color = "black", fill = NA) +
+    theme_bw() +
+    minimalize +
+    ggtitle("Incarcerated Population Ratio of Black to White by Counties in WA (1970 - 2018)")
+
+  county_black_to_white_incar_pop <- gg1 + scale_fill_gradient(
+    low = "#000000", high = "#e74c3c",
+    breaks = c(0.025, 0.05, 0.1, 0.2, 0.4, 0.8), trans = "log10",
+    name = "# of Crimes"
+  )
+  return(county_black_to_white_incar_pop)
+}
+
+plot_wa_incarceration()
 #----------------------------------------------------------------------------#
 
 ## Load data frame ----
