@@ -4,27 +4,33 @@ library(tidyverse)
 source("../source/a4-helpers.R")
 incarceration_df <- get_data()
 
-## Section 2  ---- 
+## Section 2  ----
 #----------------------------------------------------------------------------#
 # Your functions and variables might go here ...
-# In this section, our task was to wrangle the given data set and find summarized information 
-# that can later be used to simply explain the idea of the data set. In this list, 
-# I tried to find the race that had the most prison population 
+# In this section, our task was to wrangle the given data set and find summarized information
+# that can later be used to simply explain the idea of the data set. In this list,
+# I tried to find the race that had the most prison population
 summary_info <- list()
 
 us_prison_pop_df <- incarceration_df %>%
   group_by(year) %>%
-  select(year, aapi_prison_pop, black_prison_pop,
-         native_prison_pop, latinx_prison_pop, white_prison_pop, total_prison_pop) %>%
-  summarise(across(c(aapi_prison_pop, black_prison_pop, native_prison_pop, latinx_prison_pop,
-                     white_prison_pop, total_prison_pop), sum, na.rm=T)) 
+  select(
+    year, aapi_prison_pop, black_prison_pop,
+    native_prison_pop, latinx_prison_pop, white_prison_pop, total_prison_pop
+  ) %>%
+  summarise(across(c(
+    aapi_prison_pop, black_prison_pop, native_prison_pop, latinx_prison_pop,
+    white_prison_pop, total_prison_pop
+  ), sum, na.rm = T))
 
-us_prison_rate_df<- us_prison_pop_df %>%
-  mutate(aapi_prison_rate = aapi_prison_pop/total_prison_pop,
-         black_prison_rate = black_prison_pop/total_prison_pop,
-         native_prison_rate = native_prison_pop/total_prison_pop,
-         latinx_prison_rate = latinx_prison_pop/total_prison_pop,
-         white_prison_rate = white_prison_pop/total_prison_pop) %>%
+us_prison_rate_df <- us_prison_pop_df %>%
+  mutate(
+    aapi_prison_rate = aapi_prison_pop / total_prison_pop,
+    black_prison_rate = black_prison_pop / total_prison_pop,
+    native_prison_rate = native_prison_pop / total_prison_pop,
+    latinx_prison_rate = latinx_prison_pop / total_prison_pop,
+    white_prison_rate = white_prison_pop / total_prison_pop
+  ) %>%
   select(year, matches("rate"))
 
 us_prison_rate_1970_df <- us_prison_rate_df %>%
@@ -34,12 +40,12 @@ us_prison_rate_1970_df <- us_prison_rate_df %>%
 us_prison_rate_2016_df <- us_prison_rate_df %>%
   filter(year == 2016) %>%
   select(matches("rate"))
-  
-us_prison_rate_1970_df$most_prison_race_1970 <- colnames(us_prison_rate_1970_df)[apply(us_prison_rate_1970_df,1,which.max)]
-us_prison_rate_1970_df$least_prison_race_1970 <- colnames(us_prison_rate_1970_df)[apply(us_prison_rate_1970_df,1,which.min)]
 
-us_prison_rate_2016_df$most_prison_race_2016 <- colnames(us_prison_rate_2016_df)[apply(us_prison_rate_2016_df,1,which.max)]
-us_prison_rate_2016_df$least_prison_race_2016 <- colnames(us_prison_rate_2016_df)[apply(us_prison_rate_2016_df,1,which.min)]
+us_prison_rate_1970_df$most_prison_race_1970 <- colnames(us_prison_rate_1970_df)[apply(us_prison_rate_1970_df, 1, which.max)]
+us_prison_rate_1970_df$least_prison_race_1970 <- colnames(us_prison_rate_1970_df)[apply(us_prison_rate_1970_df, 1, which.min)]
+
+us_prison_rate_2016_df$most_prison_race_2016 <- colnames(us_prison_rate_2016_df)[apply(us_prison_rate_2016_df, 1, which.max)]
+us_prison_rate_2016_df$least_prison_race_2016 <- colnames(us_prison_rate_2016_df)[apply(us_prison_rate_2016_df, 1, which.min)]
 
 black_prison_pop_year <- incarceration_df %>%
   group_by(year) %>%
@@ -72,81 +78,135 @@ summary_info$black_prison_pop_ca <- black_prison_pop_state %>%
 
 #----------------------------------------------------------------------------#
 
-## Section 3  ---- 
+## Section 3  ----
 #----------------------------------------------------------------------------#
 # Growth of the U.S. Prison Population
-# In this section, our task is to create two functions. One that will wrangle out data set into 
+# In this section, our task is to create two functions. One that will wrangle out data set into
 # a subset that we can use in another functions to plot our data. The plotting will be done on
-# prison population in the U.S. from 1970 to 2018 using a geom_col. 
+# prison population in the U.S. from 1970 to 2018 using a geom_col.
 
-# This function ... breaks down the incarceration_df into subsets so that it only 
-# contains information about the prison population in the U.S. from 1970 to 2018. 
+# This function ... breaks down the incarceration_df into subsets so that it only
+# contains information about the prison population in the U.S. from 1970 to 2018.
 get_year_jail_pop <- function() {
   prison_pop_1979_2018 <- incarceration_df %>%
     group_by(year) %>%
     summarise(total_jail_pop = sum(total_jail_pop, na.rm = T))
-  return(prison_pop_1979_2018)   
+  return(prison_pop_1979_2018)
 }
 
 # This function ... calls the above get_year_jail_pop function to change data frame into
-# a subset of data frame that would be used to create a bar visualizations that is used to 
+# a subset of data frame that would be used to create a bar visualizations that is used to
 # show the growth of the U.S. prison population from 1970 to 2018 in the U.S.
-plot_jail_pop_for_us <- function()  {
-  bar <- ggplot(get_year_jail_pop(), aes(year, total_jail_pop)) + 
+plot_jail_pop_for_us <- function() {
+  bar <- ggplot(get_year_jail_pop(), aes(year, total_jail_pop)) +
     geom_col() +
-    labs(title = "Increase of Jail Population in the U.S. (1970 - 2018)", 
-         x = "Year", y = "Total Jail Population") + 
-    scale_y_continuous(labels = scales::comma) 
-  return(bar)   
-} 
+    labs(
+      title = "Increase of Jail Population in the U.S. (1970 - 2018)",
+      x = "Year", y = "Total Jail Population"
+    ) +
+    scale_y_continuous(labels = scales::comma)
+  return(bar)
+}
 #----------------------------------------------------------------------------#
 
-## Section 4  ---- 
+## Section 4  ----
 #----------------------------------------------------------------------------#
-# Growth of Prison Population by State 
-# In this section, our task is to create two functions where one function will take a 
+# Growth of Prison Population by State
+# In this section, our task is to create two functions where one function will take a
 # vector of state names and use that to filter out the incarceration_df into a smaller
 # subset df with specified states and will be used in another function to plot that data frame
-# so that the plotting will be done on prison population of those states from 1970 to 2018 
-# using line charts. 
+# so that the plotting will be done on prison population of those states from 1970 to 2018
+# using line charts.
 
 # This functions takes in a manually specified vectors of state names (when called) and wrangles
-# the incarceration_df into a subset that will only contain the states that are speified. 
-# Will contain it's sum of jail_pop by year and state. 
+# the incarceration_df into a subset that will only contain the states that are speified.
+# Will contain it's sum of jail_pop by year and state.
 get_jail_pop_by_states <- function(states) {
-  state_pop <- incarceration_df %>% 
-    group_by(state, year) %>% 
-    filter(state %in% c(states)) %>% 
+  state_pop <- incarceration_df %>%
+    group_by(state, year) %>%
+    filter(state %in% c(states)) %>%
     summarise(total_jail_pop = sum(total_jail_pop, na.rm = T))
   return(state_pop)
 }
 
 # This function calls the above function to use its wrangled subset to create a line chart
-# containing increase of jail population from 1970 - 2018. Different states will differ in color. 
+# containing increase of jail population from 1970 - 2018. Different states will differ in color.
 plot_jail_pop_by_states <- function(states) {
-  line <- ggplot(get_jail_pop_by_states(c(states)), 
-                 aes(x = year, y = total_jail_pop, group = state)) +
+  line <- ggplot(
+    get_jail_pop_by_states(c(states)),
+    aes(x = year, y = total_jail_pop, group = state)
+  ) +
     geom_line(aes(color = state)) +
-    labs(title = "Increase of Jail Population by States (1970 - 2018)", 
-         x = "Year", y = "Total Jail Population") +
+    labs(
+      title = "Increase of Jail Population by States (1970 - 2018)",
+      x = "Year", y = "Total Jail Population"
+    ) +
     scale_y_continuous(labels = scales::comma)
   return(line)
 }
 #----------------------------------------------------------------------------#
 
-## Section 5  ---- 
+## Section 5  ----
 #----------------------------------------------------------------------------#
-# <variable comparison that reveals potential patterns of inequality>
-# In this section 
+# Finding Inequalities in Incarceration Using Population of Total and Black in U.S. and Incarcerated Population.
+# In this section, I will be creating functions that will be used to wrangle incarceration
+# trends data set into subsets so that it can be used find the Black Population
+# and the Incarceration of Black Population (jail + prison) grouped by the urbanicity to find the ratio.
+# We will also look into the ratio of total population vs total incarcerated population to mention the inequality.
+# Then another function will be made to call the get_black_incarceration function to plot our subset
+# with interested variables and values to visualize our findings in inequality using charts.
+
+# This function will wrangle and crate a subset of the incarceration_df into a 
+# variable called total_and_black_incarceration to group by urbanicity and mutate, summarise, 
+# to eventually create a data frame containing ratio of the incarceration for Black population. 
+get_black_incarceration_ratio <- function() {
+  total_and_black_incarceration <- incarceration_df %>%
+    group_by(urbanicity) %>%
+    mutate(
+      black_incarceration_pop = black_jail_pop + black_prison_pop,
+      total_incarceration_pop = total_jail_pop + total_prison_pop
+    ) %>%
+    summarise(
+      black_incarceration_pop = sum(black_incarceration_pop, na.rm = T),
+      total_incarceration_pop = sum(total_incarceration_pop, na.rm = T),
+      total_black_pop_15to64 = sum(black_pop_15to64, na.rm = T),
+      total_pop_15to64 = sum(total_pop_15to64, na.rm = T)
+    ) %>%
+    mutate(black_rate = (black_incarceration_pop / total_black_pop_15to64)) %>%
+    mutate(total_rate = (total_incarceration_pop / total_pop_15to64)) %>%
+    mutate(black_total_rate = (black_incarceration_pop / total_pop_15to64)) %>%
+    filter(urbanicity != "") %>%
+    select(urbanicity, matches("rate")) %>%
+    pivot_longer(cols = -urbanicity, names_to = "rate")
+  return(total_and_black_incarceration)
+}
+
+# This function calls the above data wrangling function to grab the subset data frame 
+# and turn it into a barplot with x axis being urbanicity and y being the incarceration ratio. 
+# It shows three different values: Black incarceration compared to Black population, 
+# Total incarceration compared to Total population, and Black incarceration compared to Total population. 
+plot_black_incarceration_ratio <- function() {
+  ggplot(data = get_black_incarceration_ratio()) +
+    geom_col(
+      mapping = aes(x = urbanicity, y = value, fill = rate),
+      position = position_dodge2(reverse = TRUE)
+    ) +
+    labs(
+      title = "Ratio of Incarceration for Black Population Based on Urbanicity",
+      subtitle= "In comparison to the Total Incarceration Population and to Black Incarceration with Total", 
+      x = "Urbanicity", y = "Incarceration Ratio"
+    ) +
+    scale_fill_manual(
+      values = c("black", "red", "blue"),
+      labels = c(black_rate = "BlackToBlack", total_rate = "TotalToTotal", black_total_rate = "BlackToTotal")
+    )
+}
 #----------------------------------------------------------------------------#
 
-## Section 6  ---- 
+## Section 6  ----
 #----------------------------------------------------------------------------#
 # <a map shows potential patterns of inequality that vary geographically>
-# Your functions might go here ... <todo:  update comment>
-# See Canvas
+# In this section,
 #----------------------------------------------------------------------------#
 
-## Load data frame ---- 
-
-
+## Load data frame ----

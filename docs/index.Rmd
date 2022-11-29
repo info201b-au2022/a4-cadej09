@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Inequalities in Jail & Prison Populations in the U.S."
 author: "Cade Jeong"
 date: '2022-11-17'
 output: html_document
@@ -14,12 +14,10 @@ options(scipen=999)
 ## Abstract 
 With the ever increasing population in prison and the rate of incarceration in America, we are greatly concerned about the life of those behind bars and the possible racial disparities that exist regarding the population in prison. Our goal is to find where these disparities exist using data and suggest ways to fix them.
 
-
 ## Introduction 
 Ever since 1865 with the end of the Civil War and the passage of the 13th Amendment, the incarceration and arrests had been a major issue to those who are Black and/or not privileged. 
 And as if to follow the historical trend, newly elected officials and policymaker did not step up 
 to address the issues at hand but rather, caused more suffering. Although the idea of racial disparities within the jail population is a big issue itself, within the context that the U.S. holds 16% of the jail population in the entire world is more troublesome. As quoted from [Vera Institute](https://www.vera.org/), “From 1850 to 1940, racial and ethnic minorities—including foreign-born and non-English speaking European immigrants—made up 40 to 50 percent of the prison population. In 2015, about 55 percent of people imprisoned in federal or state prisons were Black or Latino.” The dataset is collected so that we can analyze the patterns in which inequalities exist and suggest possible solutions to how they can be fixed. Which makes the direct stakeholders for this dataset and its usage being policymakers, families (including self) of those being incarcerated, researchers (data), and indirect being all those who belong in the privilege hazard; not knowing about what is going on. 
-
 
 ## Data Summary 
 I am not sure if we were supposed to answer exactly the three questions that are on Canvas or we could choose our data like the P2, but while looking at the data set and reading through its code book, I got my interest on looking into which race faced the most inequalities in being prisoned.
@@ -32,3 +30,34 @@ This being said, we can see that AAPI race were always the least likely to be a 
 
 Based on this trend, we can see that the Black population has been suffering from the inequalities and for more detailed information on this, I found that `r summary_info$year_most_black_prison` was the year in which Black population was at large in prison in the U.S. with the population of `r summary_info$black_prison_pop_2013` and that `r summary_info$state_most_black_prison` is the state in which Black population is at large in prison with the population at `r summary_info$black_prison_pop_ca`.
 
+## How did the jail population in the U.S. change over time?
+### Chart 1: Increase of Jail Population in the U.S. (1970 - 2018)
+```{r echo=FALSE}
+plot(plot_jail_pop_for_us())
+```
+
+This plot shows us 
+
+## How did the jail population in the specified states change over time?
+### Chart 2: Increase of Jail Population by states (1970 - 2018)
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plot(plot_jail_pop_by_states(c("AK", "NY", "WA", "CA", "TX")))
+```
+
+This plot shows us
+
+## How is the Black population experiencing inequalities based on urbanicity of the U.S.?
+### Chart 3: Ratio of Incarceration for Black Population Based on Urbanicty
+```{r echo=FALSE}
+plot(plot_black_incarceration_ratio())
+```
+
+This plot shows us
+
+## Chart 4:
+```{r echo=FALSE}
+plot()
+```
+?
+
+This plot
